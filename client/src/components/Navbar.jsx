@@ -1,16 +1,20 @@
 import React from 'react'
 import { assets } from './../assets/assets';
 import { useClerk , UserButton ,useUser } from '@clerk/clerk-react';
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 const Navbar = () => {
 
   const {openSignIn} = useClerk() ; //useClerk is react hook tabi3 il clerk, ki nclikiw it7al il login form
 
   const {user} =useUser(); // si user logged the user will not be empty
+
+const navigate = useNavigate()
   return (
     <div className='shadow py-4'>
       <div className='container px-4 2xl:px-20 mx-auto flex justify-between items-center '>
-        <img src={assets.logo1} alt="logo" width={180} height={38} />
+        <img onClick={() => { navigate('/') }}
+        className='cursor-pointer'
+        src={assets.logo1} alt="logo" width={180} height={38} />
 
 {
   user 

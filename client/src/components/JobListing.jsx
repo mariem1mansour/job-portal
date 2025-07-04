@@ -13,11 +13,16 @@ const JobListing = () => {
   const [selectedLocations, setSelectedLocations] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState(jobs);
 
+  //Fonction quand on coche une catégorie
+  //Si elle était déjà cochée → on la décoche
+  // Si elle ne l’était pas → on la coche
   const handleCategoryChange = (category) => {
+    // (prev) signifie : « Donne-moi la liste actuelle » (ce qu’il y avait avant)
     setSelectedCategories((prev) =>
       prev.includes(category)
         ? prev.filter((c) => c !== category)
-        : [...prev, category]
+        : // Prends tout ce qu’il y a dans prev, et ajoute category à la fin
+          [...prev, category]
     );
   };
 
@@ -29,46 +34,52 @@ const JobListing = () => {
     );
   };
 
-  useEffect(() => {
-    const matchesCategory = (job) => 
-      selectedCategories.length === 0 ||
-        selectedCategories.
-        includes(job.category);
-    
+  useEffect(
+    () => {
+      // Pour chaque emploi, cette fonction dit :
+      // Si aucune catégorie n’est cochée , alors OK, montre-le.
+      // Sinon, montre-le seulement s’il fait partie d’une des catégories cochées .
+      const matchesCategory = (job) =>
+        selectedCategories.length === 0 ||
+        selectedCategories.includes(job.category);
 
-    const matchesLocation = (job) => 
-      selectedLocations.length === 0 ||
-        selectedLocations.
-        includes(job.location);
-    
+      const matchesLocation = (job) =>
+        selectedLocations.length === 0 ||
+        selectedLocations.includes(job.location);
 
-    const matchesTitle = (job) => 
-      searchFilter.title === "" ||
-        job.title.
-        toLowerCase().
-        includes(searchFilter.title.toLowerCase());
-    
+      const matchesTitle = (job) =>
+        searchFilter.title === "" ||
+        job.title.toLowerCase().includes(searchFilter.title.toLowerCase());
 
-    const matchesSearchLocation = (job) => 
-      searchFilter.location === "" ||
+      const matchesSearchLocation = (job) =>
+        searchFilter.location === "" ||
         job.location
           .toLowerCase()
           .includes(searchFilter.location.toLowerCase());
-    
 
-    const newFilteredJobs = jobs
-      .slice()
-      .reverse()
-      .filter((job) => 
-        matchesCategory(job) &&
-          matchesLocation(job) &&
-          matchesTitle(job) &&
-          matchesSearchLocation(job)
-      );
+      /**
+ * On applique les filtres :
+.slice() → copie de la liste originale
+.reverse() → pour montrer les plus récents en premier
+.filter() → garde seulement les emplois qui correspondent à tous les critères
+ */
+      const newFilteredJobs = jobs
+        .slice()
+        .reverse()
+        .filter(
+          (job) =>
+            matchesCategory(job) &&
+            matchesLocation(job) &&
+            matchesTitle(job) &&
+            matchesSearchLocation(job)
+        );
 
-    setFilteredJobs(newFilteredJobs);
-    setCurrentPage(1);
-  }, [jobs, selectedCategories, selectedLocations, searchFilter]);
+      setFilteredJobs(newFilteredJobs);
+      setCurrentPage(1);
+    },
+    //useEffect se lance chaque fois que l’une de ces valeurs change.
+    [jobs, selectedCategories, selectedLocations, searchFilter]
+  );
 
   return (
     <div className="container 2xl:px-20 mx-auto flex flex-col lg:flex-row max-lg:space-y-8 py-8">
@@ -221,7 +232,10 @@ const JobListing = () => {
               <img
                 onClick={() => {
                   setCurrentPage(
-                    Math.min(currentPage + 1, Math.ceil(filteredJobs.length / 6))
+                    Math.min(
+                      currentPage + 1,
+                      Math.ceil(filteredJobs.length / 6)
+                    )
                   );
                 }}
                 src={assets.right_arrow_icon}
