@@ -5,6 +5,7 @@ import User from "../models/User.js";
 
 export const clerkWebhooks = async (req, res) => {
   try {
+    console.log("Webhook reçu 🔸 ! Type:", req.body.type); // 🔥 LOG
     //create a svix instance with clerk webhook secret
     const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
     //verify headers
@@ -25,7 +26,9 @@ export const clerkWebhooks = async (req, res) => {
           image: data.image_url,
           resume: "",
         };
+        console.log("Création de l'utilisateur 🔸:", userData); // 🔥 LOG
         await User.create(userData);
+        console.log("✅ Utilisateur enregistré dans la DB"); // 🔥 LOG
         res.json({});
         break;
       }
@@ -36,19 +39,29 @@ export const clerkWebhooks = async (req, res) => {
           image: data.image_url,
         };
         await User.findByIdAndUpdate(data.id, userData);
+        console.log("✅ Utilisateur mis à jour"); // 🔥 LOG
         res.json({});
         break;
       }
       case "user.deleted": {
         await User.findByIdAndDelete(data.id);
+        console.log("✅ Utilisateur supprimé"); // 🔥 LOG
         res.json({});
         break;
       }
       default:
+        console.log("⚠️ Événement non géré");
         break;
     }
+    res.status(200).json({ success: true });
   } catch (error) {
-    console.log(error.message);
-    res.json({success:false , message:"WebHooks Error ❌"})
+    console.error("❌ Webhook error:", error.message); // Affiche l'erreur exacte
+    res
+      .status(400)
+      .json({
+        success: false,
+        message: "Webhook Error ❌",
+        error: error.message,
+      });
   }
 };
