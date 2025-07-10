@@ -1,3 +1,5 @@
+import './config/instrument.js'
+import * as Sentry from "@sentry/node"
 import express from "express";
 import cors from "cors";
 import "dotenv/config";
@@ -17,6 +19,24 @@ app.use(express.json());
 const port = process.env.PORT || 5000;
 
 //routes
-app.get("/", (req, res) => res.send("Server is working ..."));
+// app.get("/", (req, res) => res.send("Server is working ..."));
+app.get("/", function rootHandler(req, res) {
+  res.end("Server is working ...🏆");
+});
+app.get("/debug-sentry", function mainHandler(req, res) {
+  throw new Error("My first Sentry error!");
+});
+
+
+// The error handler must be registered before any other error middleware and after all controllers
+Sentry.setupExpressErrorHandler(app);
+
+// Optional fallthrough error handler
+app.use(function onError(err, req, res, next) {
+  // The error id is attached to `res.sentry` to be returned
+  // and optionally displayed to the user for support.
+  res.statusCode = 500;
+  res.end(res.sentry + "\n");
+});
 
 app.listen(port, () => console.log(`Server listening on port ${port}!`));
