@@ -69,10 +69,9 @@ export const clerkWebhooks = async (req, res) => {
   try {
     console.log("🔸 Webhook reçu ! Type:", req.body?.type);
 
-    // ✅ Réponds IMMÉDIATEMENT à Clerk/Svix
+    // ✅ Répond immédiatement pour éviter timeout
     res.status(200).json({ success: true });
 
-    // ✅ Continue le traitement en arrière-plan
     const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
 
     const payload = await whook.verify(req.body, {
@@ -96,8 +95,11 @@ export const clerkWebhooks = async (req, res) => {
         const existingUser = await User.findById(data.id);
         if (!existingUser) {
           await User.create(userData);
-          console.log("✅ Nouvel utilisateur créé");
+          console.log("✅ Nouvel utilisateur créé :", userData);
+        } else {
+          console.log("⚠️ Utilisateur déjà existant :", data.id);
         }
+
         break;
       }
 
@@ -114,9 +116,9 @@ export const clerkWebhooks = async (req, res) => {
         break;
 
       default:
-        console.log("⚠️ Événement non géré :", type);
+        console.log("❓ Événement inconnu :", type);
     }
   } catch (error) {
-    console.error("❌ Webhook Error:", error.message);
+    console.error("❌ Erreur lors du traitement du webhook :", error.message);
   }
 };
