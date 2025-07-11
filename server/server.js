@@ -32,12 +32,12 @@ app.get("/", (req, res) => res.send("Server is working ..."));
 // app.get("/debug-sentry", function mainHandler(req, res) {
 //   throw new Error("My first Sentry error!");
 // });
-// app.post('/webhooks',clerkWebhooks)
-app.post('/webhooks', (req, res, next) => {
-  console.log("🚨 Webhook reçu - Headers:", req.headers);
-  console.log("🚨 Webhook reçu - Body:", req.body);
-  clerkWebhooks(req, res, next);
-});
+app.post('/webhooks',clerkWebhooks)
+// app.post('/webhooks', (req, res, next) => {
+//   console.log("🚨 Webhook reçu - Headers:", req.headers);
+//   console.log("🚨 Webhook reçu - Body:", req.body);
+//   clerkWebhooks(req, res, next);
+// });
 
 
 
