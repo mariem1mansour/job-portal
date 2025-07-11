@@ -119,10 +119,6 @@
 //   }
 // };
 
-
-
-
-
 import { Webhook } from "svix";
 import User from "../models/User.js";
 
@@ -136,11 +132,14 @@ export const clerkWebhooks = async (req, res) => {
     res.status(200).json({ success: true });
 
     // ⚠️ Vérifie que req.body existe
-    if (!req.body || !req.body.data || !req.body.type) {
+    // if (!req.body || !req.body.data || !req.body.type) {
+    //   console.warn("⚠️ Corps de la requête invalide", req.body);
+    //   return;
+    // }
+    if (!req.body || typeof req.body !== "object") {
       console.warn("⚠️ Corps de la requête invalide", req.body);
-      return;
+      return res.status(400).json({ success: false, message: "Invalid body" });
     }
-
     // 🔐 Vérifie la signature Svix
     const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
     const payload = await whook.verify(JSON.stringify(req.body), {
