@@ -45,7 +45,7 @@ app.post('/webhooks',clerkWebhooks)
 const port = process.env.PORT || 5000;
 
 // The error handler must be registered before any other error middleware and after all controllers
-// Sentry.setupExpressErrorHandler(app);
+Sentry.setupExpressErrorHandler(app);
 
 
 app.listen(port, () => console.log(`Server listening on port ${port}!`));
