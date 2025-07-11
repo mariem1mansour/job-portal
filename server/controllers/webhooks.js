@@ -80,7 +80,7 @@ export const clerkWebhooks = async (req, res) => {
       "svix-signature": req.headers["svix-signature"],
     });
     const { data, type } = payload;
-
+// const { data, type } = req.body;
     switch (type) {
       case "user.created": {
         const userData = {
