@@ -74,12 +74,11 @@ export const clerkWebhooks = async (req, res) => {
 
     const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
 
-    const payload = await whook.verify(req.body, {
+    const payload = await whook.verify(JSON.stringify(req.body), {
       "svix-id": req.headers["svix-id"],
       "svix-timestamp": req.headers["svix-timestamp"],
       "svix-signature": req.headers["svix-signature"],
     });
-
     const { data, type } = payload;
 
     switch (type) {
@@ -122,6 +121,6 @@ export const clerkWebhooks = async (req, res) => {
     // console.error("❌ Erreur critique :", error); // ✅ Très visible
     //Sentry.captureException(error); // ✅ Envoie à Sentry aussi
     //res.status(400).json({ success: false });
-     console.error("❌ Erreur lors du traitement du webhook :", error.message);
+    console.error("❌ Erreur lors du traitement du webhook :", error.message);
   }
 };
