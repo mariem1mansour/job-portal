@@ -120,7 +120,7 @@ export const clerkWebhooks = async (req, res) => {
     }
   } catch (error) {
     // console.error("❌ Erreur critique :", error); // ✅ Très visible
-    Sentry.captureException(error); // ✅ Envoie à Sentry aussi
+    //Sentry.captureException(error); // ✅ Envoie à Sentry aussi
     res.status(400).json({ success: false });
      console.error("❌ Erreur lors du traitement du webhook :", error.message);
   }

@@ -5,9 +5,9 @@ mongoose.connect("mongodb+srv://mariemmansour7777:TUr4H7PTxFpLDPk6@jobseeker.wt0
 
 const testUser = async () => {
   const user = await User.create({
-    _id: "manual_123",
-    name: "Test User",
-    email: "test@example.com",
+    _id: "manual_1234",
+    name: "Test User4",
+    email: "test4@example.com",
     image: "https://example.com/avatar.png ",
     resume: "",
   });
