@@ -22,7 +22,15 @@ app.use(function onError(err, req, res, next) {
   res.statusCode = 500;
   res.end(res.sentry + "\n");
 });
-
+app.use('/webhooks', express.raw({ type: 'application/json', inflate: true }), (req, res, next) => {
+  try {
+    req.body = JSON.parse(req.body.toString());
+    next();
+  } catch (error) {
+    console.error('Erreur lors du parsing du body:', error.message);
+    res.status(400).json({ success: false, message: 'Invalid JSON' });
+  }
+});
 
 //routes
 // app.get("/", (req, res) => res.send("Server is working ..."));
