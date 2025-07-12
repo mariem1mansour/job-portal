@@ -19,7 +19,7 @@ router.post("/register",upload.single('image') ,registerCompany);
 
 //login company
 
-router.post("login", loginCompany);
+router.post("/login", loginCompany);
 
 //get company data
 router.get("/company", getCompanyData);
