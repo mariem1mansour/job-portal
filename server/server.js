@@ -7,7 +7,7 @@ import connectDB from "./config/db.js";
 import { clerkWebhooks } from "./controllers/webhooks.js";
 import companyRoutes from "./routes/companyRoutes.js";
 import connectCloudinary from "./config/cloudinary.js";
-
+import jobRoutes from "./routes/jobRoutes.js" 
 //initisation de express
 const app = express();
 
@@ -18,19 +18,13 @@ await connectCloudinary();
 //middlewares
 app.use(cors());
 app.use(express.json({ limit: "5mb" }));
-// Optional fallthrough error handler
-// app.use(function onError(err, req, res, next) {
-//   // The error id is attached to `res.sentry` to be returned
-//   // and optionally displayed to the user for support.
-//   res.statusCode = 500;
-//   res.end(res.sentry + "\n");
-// });
+
 
 //routes
 app.get("/", (req, res) => res.send("Server is working ..."));
 app.post("/webhooks", clerkWebhooks);
 app.use("/api/company", companyRoutes);
-
+app.use('/api/jobs',jobRoutes)
 //port
 const port = process.env.PORT || 5000;
 
