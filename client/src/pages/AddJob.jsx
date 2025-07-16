@@ -1,6 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Quill from "quill";
 import { JobCategories, JobLocations } from "../assets/assets";
+import axios from "axios";
+import { AppContext } from "../context/AppContext";
+import { toast } from "react-toastify";
 
 const AddJob = () => {
   const [title, setTitle] = useState("");
@@ -11,6 +14,41 @@ const AddJob = () => {
   const editorRef = useRef(null);
   const quillRef = useRef(null);
 
+  const { backendUrl, companyToken } = useContext(AppContext);
+
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+    try {
+      const description = quillRef.current.root.innerHTML;
+
+      const { data } = await axios.post(
+        backendUrl + "/api/company/post-job",
+        {
+          title,
+          description,
+          salary,
+          location,
+          category,
+          level,
+        },
+        {
+          headers: { token: companyToken },
+        }
+      );
+
+      if (data.success) {
+        toast.success(data.message);
+        setTitle("");
+        setSalary(0);
+        quillRef.current.root.innerHTML = "";
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   useEffect(() => {
     //initialisation de quill une seule fois
     if (!quillRef.current && editorRef.current) {
@@ -20,13 +58,14 @@ const AddJob = () => {
     }
   }, []);
   return (
-    
-    <form className="container p-4 flex flex-col w-full items-start gap-4">
-      
+    <form
+      onSubmit={onSubmitHandler}
+      className="container p-4 flex flex-col w-full items-start gap-4"
+    >
       <div className="w-full">
         <p className="mb-2">Job Title</p>
         <input
-        // max-w-lg  signifie :"Limite la largeur maximale de cet élément à la taille lg" 
+          // max-w-lg  signifie :"Limite la largeur maximale de cet élément à la taille lg"
           className="w-full max-w-lg px-3 py-2 border-2 border-gray-300 rounded"
           type="text"
           placeholder="Enter The Job Title"
@@ -47,7 +86,7 @@ const AddJob = () => {
         <div className="">
           <p className="mb-2">Job Category</p>
           <select
-          className="w-full px-3 py-2 border-2 border-gray-300 rounded"
+            className="w-full px-3 py-2 border-2 border-gray-300 rounded"
             onChange={(e) => {
               setCategory(e.target.value);
             }}
@@ -98,7 +137,7 @@ const AddJob = () => {
       <div className="">
         <p className="mb-2">Job Salary</p>
         <input
-        className="w-full px-3 py-2 border-2 border-gray-300 rounded sm:w-[120px]"
+          className="w-full px-3 py-2 border-2 border-gray-300 rounded sm:w-[120px]"
           onChange={(e) => {
             setSalary(e.target.value);
           }}
@@ -108,7 +147,9 @@ const AddJob = () => {
         />
       </div>
 
-      <button className="w-40 py-3 mt-4 bg-fuchsia-600 text-white rounded transition duration-300 hover:scale-105">Click To Add Job</button>
+      <button className="w-40 py-3 mt-4 bg-fuchsia-600 text-white rounded transition duration-300 hover:scale-105">
+        Click To Add Job
+      </button>
     </form>
   );
 };
