@@ -18,7 +18,7 @@ const LoginRecruiter = () => {
     e.preventDefault();
 
     if (state == "Sign Up" && !isTextDataSubmited) {
-    return  setIsTextDataSubmited(true);
+      return setIsTextDataSubmited(true);
     }
 
     try {
@@ -44,7 +44,7 @@ const LoginRecruiter = () => {
         formData.append("email", email);
         formData.append("image", image);
 
-        const { data } = axios.post(
+        const { data } = await axios.post(
           backendUrl + "/api/company/register",
           formData
         );
