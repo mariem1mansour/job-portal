@@ -8,7 +8,7 @@ const navigate = useNavigate()
   return (
     <div className='border border-gray-300 p-6 shadow-md rounded-3xl'>
       <div className="flex justify-between items-center">
-        <img className='h-8' src={assets.company_icon} alt="company image" />
+        <img className='h-8' src={job.companyId.image} alt="company image" />
       </div>
       <h4 className='font-medium mt-2 text-xl'>{job.title}</h4>
       <div className="flex items-center gap-2.5 text-xs mt-1 mb-1">
