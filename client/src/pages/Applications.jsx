@@ -47,7 +47,7 @@ const Applications = () => {
       <div className=" container px-4 min-h-[65vh] 2xl:px-20 mx-auto my-10">
         <h2 className="text-xl font-semibold">Your C.V</h2>
         <div className="flex gap-3 mb-6 mt-3">
-          {isEdit || userData && userData.resume === "" ? (
+          {isEdit || (userData && userData.resume === "") ? (
             <>
               <label className="flex items-center" htmlFor="cvUpload">
                 <p className="bg-fuchsia-100 text-fuchsia-600 px-4 py-2 rounded-lg mr-2">
@@ -105,20 +105,20 @@ const Applications = () => {
             </tr>
           </thead>
           <tbody>
-            {jobsApplied.map((job, index) =>
+            {userApplications.map((job, index) =>
               true ? (
-                <tr>
+                <tr key={index}>
                   <td className="py-3 px-4 flex items-center gap-2 border-b">
                     <img
                       className="w-8 h-8"
-                      src={job.logo}
+                      src={job.companyId.image}
                       alt="company logo"
                     />
-                    {job.company}
+                    {job.companyId.name}
                   </td>
-                  <td className="py-2 px-4 border-b">{job.title}</td>
+                  <td className="py-2 px-4 border-b">{job.jobId.title}</td>
                   <td className="py-2 px-4 border-b max-sm:hidden">
-                    {job.location}
+                    {job.jobId.location}
                   </td>
                   <td className="py-2 px-4 border-b max-sm:hidden">
                     {moment(job.date).format("ll")}
