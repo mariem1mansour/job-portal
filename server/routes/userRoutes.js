@@ -20,6 +20,6 @@ router.post("/apply", applyForJob);
 router.get("/applications", getUserJobApplications);
 
 //update cv
-router.post("/update-cv", upload.single("resume"), updateUserResume);
+router.post("/update-resume", upload.single("resume"), updateUserResume);
 
 export default router;

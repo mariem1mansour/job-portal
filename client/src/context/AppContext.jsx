@@ -114,6 +114,10 @@ export const AppContextProvider = (props) => {
     companyData,
     setCompanyData,
     backendUrl,
+    userData,
+    userApplications,
+    setUserApplications,
+    fetchUserData,
   };
 
   return (
