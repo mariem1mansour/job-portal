@@ -53,7 +53,9 @@ const ViewApplications = () => {
 
   return applicants ? (
     applicants.length === 0 ? (
-      <div></div>
+      <div className="flex items-center justify-center h-[70vh]">
+        <p className="text-xl sm:text-2xl text-fuchsia-500">No Applications Yet 😓</p>
+      </div>
     ) : (
       <div className="container mx-auto p-4">
         <div className="">
