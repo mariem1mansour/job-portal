@@ -21,7 +21,7 @@ const Hero = () => {
     <div className="container 2xl:px-20 mx-auto my-10">
       <div className="bg-gradient-to-r from-fuchsia-800 to-fuchsia-950 text-white text-center py-16 mx-2 rounded-xl">
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-medium mb-4">
-          🚀 Kickstart Your Career with 300,000+ Jobs
+          🚀 Kickstart Your Career with 500,000+ Jobs
         </h2>
         <p className="mb-8 max-w-xl mx-auto text-sm font-light px-5">
           Ready for your next big opportunity? Explore the best job openings now
