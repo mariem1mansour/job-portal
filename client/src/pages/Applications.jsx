@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { assets, jobsApplied } from "../assets/assets";
 import moment from "moment";
@@ -14,8 +14,13 @@ const Applications = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [cv, setCv] = useState(null);
 
-  const { backendUrl, userData, userApplications, fetchUserData } =
-    useContext(AppContext);
+  const {
+    backendUrl,
+    userData,
+    userApplications,
+    fetchUserData,
+    fetchUserApplications,
+  } = useContext(AppContext);
 
   const updateCv = async () => {
     try {
@@ -40,6 +45,11 @@ const Applications = () => {
     setCv(null);
   };
 
+  useEffect(() => {
+    if (user) {
+      fetchUserApplications();
+    }
+  }, [user]);
   return (
     <>
       <Navbar />

@@ -1,6 +1,6 @@
 import express from "express";
 import {
-  ChangeJobApplocationsStatus,
+  ChangeJobApplicationsStatus,
   changeVisiblity,
   getComapnyPostedJobs,
   getCompanyData,
@@ -35,7 +35,7 @@ router.get("/applicants",protectCompany, getCompanyJobApplicants);
 router.get("/list-jobs",protectCompany, getComapnyPostedJobs);
 
 //change applications status
-router.post("/change-status",protectCompany, ChangeJobApplocationsStatus);
+router.post("/change-status",protectCompany, ChangeJobApplicationsStatus);
 
 //change applications visibility
 router.post("/change-visiblity",protectCompany, changeVisiblity);
