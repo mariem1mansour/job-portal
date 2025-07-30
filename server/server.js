@@ -11,7 +11,7 @@ import jobRoutes from "./routes/jobRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import { clerkMiddleware } from "@clerk/express";
 import chatbotRoutes from "./routes/chatbotRoutes.js"
-
+import dashboardChatRoutes from "./routes/dashboardChat.js"
 //initisation de express
 const app = express();
 
@@ -32,6 +32,7 @@ app.use("/api/jobs", jobRoutes);
 app.use("/api/users", userRoutes);
 
 app.use("/api/chatbot", chatbotRoutes);
+app.use("/api/dashboard-chat", dashboardChatRoutes);
 
 //port
 const port = process.env.PORT || 5000;
