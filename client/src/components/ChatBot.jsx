@@ -15,6 +15,79 @@ const Chat = () => {
   const [showChatBot, setShowChatBot] = useState(false);
   const chatBodyRef = useRef();
 
+  // const generateBotResponse = async (history) => {
+  //   const updateHistory = (text, isError = false) => {
+  //     setChatHistory((prev) =>
+  //       prev
+  //         .filter((msg) => msg.text !== "Thinking ...")
+  //         .concat({
+  //           role: "model",
+  //           text,
+  //           isError,
+  //         })
+  //     );
+  //   };
+
+  //   // Convert history to OpenRouter format
+  //   const formattedMessages = history.map((msg) => ({
+  //     role: msg.role === "model" ? "assistant" : msg.role,
+  //     content: msg.text,
+  //   }));
+
+  //   const requestOptions = {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`,
+  //       // "HTTP-Referer": "http://localhost:5173",
+  //       "HTTP-Referer": window.location.origin,
+
+  //       "X-Title": "My Chatbot",
+  //     },
+  //     body: JSON.stringify({
+  //       model: "google/gemini-pro-1.5",
+  //       messages: formattedMessages,
+  //       max_tokens: 2048,
+  //     }),
+  //   };
+
+  //   try {
+  //     console.log("🚀 Fetching URL:", import.meta.env.VITE_API_URL);
+  //     console.log(
+  //       "🚀 Authorization Header:",
+  //       `Bearer ${import.meta.env.VITE_API_KEY}`
+  //     );
+  //     console.log(
+  //       "🚀 Request Body:",
+  //       JSON.stringify({
+  //         model: "google/gemini-1.5-pro",
+  //         messages: formattedMessages,
+  //         max_tokens: 2048,
+  //       })
+  //     );
+  //     console.log("🚀 VITE_API_URL:", import.meta.env.VITE_API_URL);
+  //     console.log(
+  //       "🚀 VITE_API_KEY (first 5 chars):",
+  //       import.meta.env.VITE_API_KEY?.slice(0, 5)
+  //     );
+  //     const response = await fetch(
+  //       import.meta.env.VITE_API_URL,
+  //       requestOptions
+  //     );
+  //     if (!response.ok) {
+  //       const errorData = await response.json().catch(() => ({}));
+  //       throw new Error(errorData.error?.message || `HTTP ${response.status}`);
+  //     }
+
+  //     const data = await response.json();
+  //     const botReply = data.choices[0].message.content;
+  //     updateHistory(botReply);
+  //   } catch (error) {
+  //     console.error("OpenRouter Error:", error);
+  //     updateHistory(`AI Error: ${error.message}`);
+  //   }
+  // };
+
   const generateBotResponse = async (history) => {
     const updateHistory = (text, isError = false) => {
       setChatHistory((prev) =>
@@ -28,45 +101,36 @@ const Chat = () => {
       );
     };
 
-    // Convert history to OpenRouter format
+    // Convert to OpenRouter message format
     const formattedMessages = history.map((msg) => ({
       role: msg.role === "model" ? "assistant" : msg.role,
       content: msg.text,
     }));
 
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`,
-        "HTTP-Referer": "http://localhost:5173",
-        "X-Title": "My Chatbot",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-pro-1.5",
-        messages: formattedMessages,
-        max_tokens: 2048,
-      }),
-    };
-
     try {
-      const response = await fetch(
-        import.meta.env.VITE_API_URL,
-        requestOptions
-      );
+      const API_BASE =
+        import.meta.env.VITE_SERVER_URL || "http://localhost:5000";
+      const response = await fetch(`${API_BASE}/api/chatbot`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ messages: formattedMessages }),
+      });
+
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error?.message || `HTTP ${response.status}`);
+        const error = await response.json();
+        throw new Error(error.error || "Request failed");
       }
 
       const data = await response.json();
-      const botReply = data.choices[0].message.content;
-      updateHistory(botReply);
+      updateHistory(data.text);
     } catch (error) {
-      console.error("OpenRouter Error:", error);
+      console.error("Chatbot Error:", error);
       updateHistory(`AI Error: ${error.message}`);
     }
   };
+
   useEffect(() => {
     chatBodyRef.current?.scrollTo({
       top: chatBodyRef.current.scrollHeight,
