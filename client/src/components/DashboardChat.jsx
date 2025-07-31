@@ -1,9 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import ChatBotIcon from "./ChatBotIcon";
-import { useAuth } from "@clerk/clerk-react";
 
 const DashboardChat = () => {
-  const { isSignedIn } = useAuth();
   const [showChat, setShowChat] = useState(false);
   const [messages, setMessages] = useState([
     {
@@ -15,7 +13,10 @@ const DashboardChat = () => {
   const chatBodyRef = useRef();
 
   useEffect(() => {
-    chatBodyRef.current?.scrollTo({ top: chatBodyRef.current.scrollHeight, behavior: "smooth" });
+    chatBodyRef.current?.scrollTo({
+      top: chatBodyRef.current.scrollHeight,
+      behavior: "smooth",
+    });
   }, [messages]);
 
   const handleSubmit = async (e) => {
@@ -28,27 +29,35 @@ const DashboardChat = () => {
     setMessages((prev) => [...prev, { role: "bot", text: "Thinking..." }]);
 
     try {
-      const res = await fetch("/api/dashboard-chat", {
+      console.log("🧑 Clerk User:", req.user);
+      const res = await fetch("http://localhost:5000/api/dashboard-chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${companyToken}`, // ✅ Send token
+        },
         body: JSON.stringify({ message: input, chatHistory: messages }),
       });
 
       const data = await res.json();
-      setMessages((prev) => prev.filter(m => m.text !== "Thinking..."));
+      setMessages((prev) => prev.filter((m) => m.text !== "Thinking..."));
 
       if (data.error) {
-        setMessages((prev) => [...prev, { role: "bot", text: `Error: ${data.error}` }]);
+        setMessages((prev) => [
+          ...prev,
+          { role: "bot", text: `Error: ${data.error}` },
+        ]);
       } else {
         setMessages((prev) => [...prev, { role: "bot", text: data.reply }]);
       }
     } catch (err) {
-      setMessages((prev) => prev.filter(m => m.text !== "Thinking..."));
-      setMessages((prev) => [...prev, { role: "bot", text: "Failed to connect to AI." }]);
+      setMessages((prev) => prev.filter((m) => m.text !== "Thinking..."));
+      setMessages((prev) => [
+        ...prev,
+        { role: "bot", text: "Failed to connect to AI." },
+      ]);
     }
   };
-
-  if (!isSignedIn) return null;
 
   return (
     <>
@@ -58,7 +67,7 @@ const DashboardChat = () => {
         className="fixed bottom-6 right-6 w-12 h-12 bg-green-500 text-white rounded-full shadow-lg hover:scale-110 active:scale-95 transition z-40 flex items-center justify-center"
       >
         {showChat ? (
-          <span className="material-symbols-rounded">close</span>
+          <span className="material-symbols-rounded">X</span>
         ) : (
           <ChatBotIcon className="w-6 h-6" fill="#fff" />
         )}
@@ -67,7 +76,9 @@ const DashboardChat = () => {
       {/* Chat Popup */}
       <div
         className={`fixed bottom-20 right-6 w-80 sm:w-96 bg-white/95 backdrop-blur-xl border border-green-200 rounded-2xl shadow-2xl overflow-hidden transform transition-all duration-500 z-30 ${
-          showChat ? "translate-y-0 opacity-100 scale-100" : "translate-y-10 opacity-0 scale-95 pointer-events-none"
+          showChat
+            ? "translate-y-0 opacity-100 scale-100"
+            : "translate-y-10 opacity-0 scale-95 pointer-events-none"
         }`}
       >
         {/* Header */}
@@ -80,15 +91,25 @@ const DashboardChat = () => {
             onClick={() => setShowChat(false)}
             className="p-1 hover:bg-white/20 rounded-full"
           >
-            <span className="material-symbols-rounded">close</span>
+            <span className="material-symbols-rounded">X</span>
           </button>
         </div>
 
         {/* Messages */}
-        <div ref={chatBodyRef} className="flex flex-col h-80 px-4 py-3 space-y-2 overflow-y-auto bg-gray-50">
+        <div
+          ref={chatBodyRef}
+          className="flex flex-col h-80 px-4 py-3 space-y-2 overflow-y-auto bg-gray-50"
+        >
           {messages.map((msg, i) => (
-            <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-              {msg.role === "bot" && <ChatBotIcon className="w-6 h-6 mr-2 mt-1 text-green-500" />}
+            <div
+              key={i}
+              className={`flex ${
+                msg.role === "user" ? "justify-end" : "justify-start"
+              }`}
+            >
+              {msg.role === "bot" && (
+                <ChatBotIcon className="w-6 h-6 mr-2 mt-1 text-green-500" />
+              )}
               <div
                 className={`max-w-xs px-4 py-2 rounded-2xl text-sm leading-relaxed ${
                   msg.role === "user"
@@ -121,7 +142,7 @@ const DashboardChat = () => {
               type="submit"
               className="w-10 h-10 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center"
             >
-              <span className="material-symbols-rounded">send</span>
+              <span className="material-symbols-outlined text-sm">send</span>
             </button>
           </form>
         </div>

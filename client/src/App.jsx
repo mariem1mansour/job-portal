@@ -39,17 +39,39 @@ const App = () => {
             <Route path="/dashboard" element={<Dashboard />}>
               {companyToken ? (
                 <>
-                  <Route path="add-job" element={<AddJob />} />
-                  <Route path="manage-jobs" element={<ManageJobs />} />
+                  <Route
+                    path="add-job"
+                    element={
+                      <>
+                        <AddJob />
+                        <DashboardChat />
+                      </>
+                    }
+                  />
+
+                  <Route
+                    path="manage-jobs"
+                    element={
+                      <>
+                        <ManageJobs />
+                        <DashboardChat />
+                      </>
+                    }
+                  />
                   <Route
                     path="view-applications"
-                    element={<ViewApplications />}
+                    element={
+                      <>
+                        <ViewApplications />
+                        <DashboardChat />
+                      </>
+                    }
                   />
                 </>
               ) : null}
             </Route>
           </Routes>
-          {companyToken && <DashboardChat />}
+          {/* {companyToken && <DashboardChat />} */}
         </>
       </BrowserRouter>
     </div>
